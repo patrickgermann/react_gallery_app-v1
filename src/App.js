@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import './css/index.css';
+import axios from 'axios';
 import Nav from './Components/Nav';
 import Photo from './Components/Photo';
-import './css/index.css';
+import apiKey from './Components/config';
+
 
 export default class App extends Component {
   
@@ -18,8 +21,9 @@ export default class App extends Component {
   }
 
   performSearch = (query = 'cats') => {
-    /* axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&limit=24&api_key=dc6zaTOxFJmzC`)
+    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=cats&per_page=24&page=1&format=json&nojsoncallback=1`)
       .then(response => {
+        console.dir(response);
         this.setState({
           photos: response.data.data,
           loading: false
@@ -27,7 +31,7 @@ export default class App extends Component {
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
-      }); */
+      });
   }
 
   render() { 
