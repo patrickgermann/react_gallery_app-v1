@@ -6,7 +6,7 @@ import React from 'react';
   </li>
 ); */
 const Photo = () => (
-  <div class="results">
+  <div className="results">
     <h2>Results</h2>
     <ul>
       <li>

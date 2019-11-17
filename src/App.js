@@ -12,6 +12,7 @@ export default class App extends Component {
     super();
     this.state = {
       photos: [],
+      urls: [],
       loading: true
     }
   } 
@@ -21,18 +22,32 @@ export default class App extends Component {
   }
 
   performSearch = (query = 'cats') => {
-    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=cats&per_page=24&page=1&format=json&nojsoncallback=1`)
+    const url =  `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&text=${query}&per_page=24&format=json&nojsoncallback=1`;  
+    axios.get(url)
       .then(response => {
-        console.dir(response);
+        //console.dir(response);
+        this.makeURLarray(response.data.photos.photo);
         this.setState({
-          photos: response.data.data,
-          loading: false
+          loading: false,
+          photos: response
         });
+        console.log(this.photos);
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
       });
   }
+
+
+    //helper function to use in fetchSearchResults function
+    makeURLarray(results) {
+      const urls = results.map(
+        result =>
+          `https://farm${result.farm}.staticflickr.com/${result.server}/${result.id}_${result.secret}_m.jpg`
+      );
+      console.log(urls);
+      this.setState({ urls });
+    }
 
   render() { 
     //console.log(this.state.gifs);
