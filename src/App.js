@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import './css/index.css';
 import axios from 'axios';
+import Search from './Components/Search';
 import Nav from './Components/Nav';
-import Photo from './Components/Photo';
+import PhotoList from './Components/PhotoList';
 import apiKey from './Components/config';
 
+import {
+  BrowserRouter,
+  Route,
+  Switch
+} from 'react-router-dom';
 
 export default class App extends Component {
   
@@ -21,7 +27,7 @@ export default class App extends Component {
     this.performSearch();
   }
 
-  performSearch = (query = 'cats') => {
+  performSearch = (query = 'cars') => {
     const url =  `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&text=${query}&per_page=24&format=json&nojsoncallback=1`;  
     axios.get(url)
       .then(response => {
@@ -31,7 +37,7 @@ export default class App extends Component {
           loading: false,
           photos: response
         });
-        console.log(this.photos);
+        console.dir(this.photos);
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
@@ -45,28 +51,32 @@ export default class App extends Component {
         result =>
           `https://farm${result.farm}.staticflickr.com/${result.server}/${result.id}_${result.secret}_m.jpg`
       );
-      console.log(urls);
+      
       this.setState({ urls });
+      console.log(urls);
     }
 
   render() { 
     //console.log(this.state.gifs);
     return (
-      <div>
-        <div className="main-header">
-          <div className="inner">
-            <h1 className="main-title">Photo search</h1>
-            <Nav onSearch={this.performSearch} />      
-          </div>   
-        </div>    
-        <div className="main-content">
-          {
-            (this.state.loading)
-             ? <p>Loading...</p>
-             : <Photo data={this.state.gifs} />
-          }
+      <BrowserRouter>
+        <div>
+          <div className="main-header">
+            <div className="inner">
+              <h1 className="main-title">Photo search</h1>
+              <Search onSearch={this.performSearch} /> 
+              <Nav onSearch={this.performSearch} />
+            </div>   
+          </div>    
+          <div className="main-content">
+            {
+              (this.state.loading)
+              ? <p>Loading...</p>
+              : <PhotoList data={this.state.urls} />
+            }
+          </div>
         </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }
